@@ -32,8 +32,8 @@ function loadEventListeners() {
 async function getSingleSolid(id) {
   // get solid from 'db'
   const response = await fetch(`http://localhost:3000/api/solids/${id}`);
-  const Solid = await response.json();
-  return Solid;
+  const solid = await response.json();
+  return solid;
 }
 
 async function deleteSolid(e) {
@@ -53,7 +53,8 @@ async function printSolid(e) {
   // get solid to print
   const printSolidId =
     e.target.parentElement.previousSibling.childNodes[0].textContent;
-  const solidToPrint = await getSingleSolid(printSolidId);
+  const singleSolid = await getSingleSolid(printSolidId);
+  const solidToPrint = singleSolid[0];
 
   // make post request to /api/printjobs with solid
   await fetch('http://localhost:3000/api/printjobs', {

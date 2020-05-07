@@ -30,7 +30,7 @@ async function printNextJob() {
     printTimeRemaining.innerText = 'Starting Print';
 
     // remove from job list and DOM
-    fetch(`http://localhost:3000/api/printjobs/${currentPrintJob.jobId}`, {
+    fetch(`http://localhost:3000/api/printjobs/${currentPrintJob.id}`, {
       method: 'DELETE',
       headers: { 'Content-type': 'application/json' }
     });
