@@ -1,0 +1,41 @@
+.li-name {
+  font-size: 20px;
+}
+
+.li-detail {
+  color: grey;
+  font-size: 13px;
+}
+
+.solid-id {
+  display: none;
+}
+
+.pj-id {
+  display: none;
+}
+
+#print-time {
+  font-size: 50px;
+  text-align: center;
+}
+
+.printer-text {
+  font-weight: bold;
+}
+
+.api-toggle {
+  display: none;
+}
+
+.density-value {
+  font-size: 20px;
+}
+
+label {
+  margin-top: 1px;
+}
+
+.table-sm {
+  width: 90% !important;
+}

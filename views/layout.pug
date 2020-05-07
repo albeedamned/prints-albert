@@ -1,0 +1,24 @@
+doctype html
+html
+  head
+    title Prints Albert
+    link(rel="stylesheet" href="stylesheets/style.css")
+    link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
+  body
+    div.container.mt-4
+      h1.d-inline Prints Albert
+      //- button.float-right.btn-sm.btn-outline-primary#api-btn API
+      div.btn-group.float-right(role="group")
+        a.btn.btn-secondary#home-nav-btn(href="http://localhost:3000/") Home        
+        a.btn.btn-secondary#api-nav-btn(href="http://localhost:3000/about") About        
+      hr.mb-4
+    div.container
+      block content
+    //- script for navigation toggle 
+    script.
+      window.location.pathname === '/'
+      ? document.getElementById('home-nav-btn').classList.add('active')
+      : document.getElementById('api-nav-btn').classList.add('active');
+    script(src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous")
+    script(src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous")
+    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")

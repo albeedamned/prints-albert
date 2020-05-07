@@ -1,0 +1,65 @@
+extends layout
+
+block content  
+  div
+    h4 Some bits about myself.
+    p 
+      | Hi, my name is <strong>Prints Albert</strong>. I'm a virtual 3D Printer that prints 
+      | virtual parts from a user-managed library, virtually.
+    h4 How do I work?
+    p       
+      | I believe it's rude to talk about one's <em>back end</em> in public, but here goes...
+      | At my core, I'm a node.js web server that makes http requests to two endpoints, 
+      | <strong>/api/solids</strong> and <strong>/api/printjobs</strong>, to manage your parts. 
+      | Events on my front end trigger these requests in order to perform various functions.
+      br
+      br
+      | Here's a current list of requests I can handle:
+      table.mt-4.table.table-sm(align="center")
+        thead
+          tr
+            th Endpoint
+            th Request Type
+            th General Function
+            th DOM Usage
+        tbody
+          tr
+            td(rowspan="2") /api/solids
+            td get
+            td Get all solids in part library
+            td -
+          tr
+            td post
+            td Create solid
+            td Adds solid object to part library     
+          tr
+            td /api/solids/:id
+            td get
+            td Get single solid from part library
+            td Gets part object for addition to print queue
+          tr
+            td
+            td delete
+            td Delete solid
+            td Removes solid object from part library            
+          tr
+            td(rowspan="2") /api/printjobs
+            td get
+            td Get all print jobs in queue
+            td Gets array of print job objects to pass first job to printer
+          tr
+            td post
+            td Create print job
+            td Adds solid to print queue as a print job
+          tr
+            td /api/printjobs/:id
+            td delete
+            td Delete print job from queue
+            td Removes print job from queue
+      | Right now I store all of your part and print job data myself, however, I hope to soon offload this to a database.
+      | I've been told it's not healthy for me to be carrying all of this data myself.
+      br
+      br
+      | What you see here on my homepage are rendered HTML templates that are manipulated only by vanilla javascript. 
+      | Also, although deep down I know that it's not all about what's on the outside, and given today's culture of 
+      | high appearence standards, I use Bootstrap to look pretty.
