@@ -1,3 +1,4 @@
+const URL = 'http://prints-albert.herokuapp.com';
 const printTimeRemaining = document.getElementById('print-time');
 const solidName = document.getElementById('solid-name');
 const solidMaterial = document.getElementById('solid-material');
@@ -30,7 +31,7 @@ async function printNextJob() {
     printTimeRemaining.innerText = 'Starting Print';
 
     // remove from job list and DOM
-    fetch(`http://localhost:3000/api/printjobs/${currentPrintJob.id}`, {
+    fetch(`${URL}/api/printjobs/${currentPrintJob.id}`, {
       method: 'DELETE',
       headers: { 'Content-type': 'application/json' }
     });
@@ -50,7 +51,7 @@ async function printNextJob() {
 
 async function getAllPrintjobs() {
   // get print jobs from 'db'
-  const response = await fetch('http://localhost:3000/api/printjobs/');
+  const response = await fetch(`${URL}/api/printjobs/`);
   const printJobs = await response.json();
   return printJobs;
 }

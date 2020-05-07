@@ -1,3 +1,4 @@
+const URL = 'http://prints-albert.herokuapp.com';
 document.addEventListener('DOMContentLoaded', loadEventListeners());
 
 function loadEventListeners() {
@@ -31,7 +32,7 @@ function loadEventListeners() {
 
 async function getSingleSolid(id) {
   // get solid from 'db'
-  const response = await fetch(`http://localhost:3000/api/solids/${id}`);
+  const response = await fetch(`${URL}/api/solids/${id}`);
   const solid = await response.json();
   return solid;
 }
@@ -43,7 +44,7 @@ async function deleteSolid(e) {
   // remove from 'db'
   const delSolidId =
     e.target.parentElement.previousSibling.childNodes[0].textContent;
-  await fetch(`http://localhost:3000/api/solids/${delSolidId}`, {
+  await fetch(`${URL}/api/solids/${delSolidId}`, {
     method: 'DELETE',
     headers: { 'Content-type': 'application/json' }
   });
@@ -57,7 +58,7 @@ async function printSolid(e) {
   const solidToPrint = singleSolid[0];
 
   // make post request to /api/printjobs with solid
-  await fetch('http://localhost:3000/api/printjobs', {
+  await fetch(`${URL}/api/printjobs`, {
     method: 'POST',
     headers: { 'Content-type': 'application/json' },
     body: JSON.stringify(solidToPrint)
@@ -73,7 +74,7 @@ async function deletePrintJob(e) {
   // remove from 'db'
   const delPrintJobId =
     e.target.parentElement.previousSibling.childNodes[0].textContent;
-  await fetch(`http://localhost:3000/api/printjobs/${delPrintJobId}`, {
+  await fetch(`${URL}/api/printjobs/${delPrintJobId}`, {
     method: 'DELETE',
     headers: { 'Content-type': 'application/json' }
   });

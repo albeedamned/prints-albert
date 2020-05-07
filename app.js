@@ -4,8 +4,6 @@ const app = express();
 const Solids = require('./routes/api/solids').Solids;
 const printJobs = require('./routes/api/printjobs').Jobs;
 
-const URL = 'http://prints-albert.herokuapp.com';
-
 // set favicon path
 var favicon = require('serve-favicon');
 app.use(favicon(path.join(__dirname, 'public', 'images/favicon.ico')));
