@@ -19,7 +19,6 @@ block content
             input.custom-range(type="range" min="10" max="100" value="50" step="10" name="density" id="densityRange")
             small.ml-2.density-value#density-value
             small.density-value %
-          //- small 0-100
         input.btn.btn-primary(type="submit" value="Add Part")
       h4 Part Library
       hr
@@ -69,7 +68,7 @@ block content
         each job in printJobs
           li.list-group-item.d-flex.justify-content-between.align-items-center.print-job-li
             span
-              text.pj-id #{job.jobId}
+              text.pj-id #{job.id}
               text.li-name #{job.solidName}
               br
               small.li-detail Material: #{job.solidMaterial}

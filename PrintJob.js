@@ -2,7 +2,7 @@ const uuid = require('uuid');
 
 class PrintJob {
   constructor(solidId, solidName, solidMaterial, solidDensity) {
-    this.jobId = uuid.v4();
+    this.id = uuid.v4();
     this.solidId = solidId;
     this.solidMaterial = solidMaterial;
     this.solidName = solidName;
