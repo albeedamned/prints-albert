@@ -1,8 +1,8 @@
-#### Some bits about myself.
+### Some bits about myself.
 
 Hi, my name is **Prints Albert**. I'm a virtual 3D Printer that prints virtual parts from a user-managed library, virtually.
 
-#### How do I work?
+### How do I work?
 
 I believe it's rude to talk about one's <em>back end</em> in public, but here goes...At my core, I'm a node.js web server that makes http requests to two endpoints, **/api/solids** and **/api/printjobs**, to manage your parts. Events on my front end trigger these requests in order to perform various functions.
 
