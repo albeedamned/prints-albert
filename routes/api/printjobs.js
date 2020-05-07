@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const PrintJob = require('../../PrintJob');
+const PrintJob = require('../../object-classes/PrintJob');
 
 const Jobs = [];
 

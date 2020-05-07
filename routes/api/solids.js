@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Solid = require('../../Solid');
+const Solid = require('../../object-classes/Solid');
 
 const Solids = [
   {
