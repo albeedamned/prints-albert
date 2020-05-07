@@ -11,11 +11,11 @@ Here's a current list of requests I can handle:
 | Endpoint           | Request Type | General Function                   | DOM USage                                                    |
 | ------------------ | ------------ | ---------------------------------- | ------------------------------------------------------------ |
 | /api/solids        | get          | Get all solids in part library     | -                                                            |
-|                    | post         | Create solid                       | Adds solid object to part library                            |
+| /api/solids        | post         | Create solid                       | Adds solid object to part library                            |
 | /api/solids/:id    | get          | Get single solid from part library | Gets part object for addition to print queue                 |
-|                    | delete       | Delete solid                       | Removes solid object from part library                       |
+| /api/solids/:id    | delete       | Delete solid                       | Removes solid object from part library                       |
 | /api/printjobs     | get          | Get all print jobs in queue        | Gets array of print job objects to pass first job to printer |
-|                    | post         | Create print job                   | Adds solid to print queue as a print job                     |
+| /api/printjobs     | post         | Create print job                   | Adds solid to print queue as a print job                     |
 | /api/printjobs/:id | delete       | Delete print job from queue        | Removes print job from queue                                 |
 
 Right now I store all of your part and print job data myself, however, I hope to soon offload this to a database. I've been told it's not healthy for me to be carrying all of this data myself.
