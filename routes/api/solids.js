@@ -21,17 +21,25 @@ const Solids = [
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
 
-// create new solid
-router.post('/', (req, res) => {
-  if (validSolid(req.body)) {
-    const newSolid = new Solid(
-      req.body.name,
-      req.body.material,
-      req.body.density
-    );
-    Solids.push(newSolid);
-    return res.redirect('/');
-  } else return res.json({ messsge: 'Error - Invalid Solid' });
+// middleware function to validate solid
+const validSolid = (req, res, next) => {
+  const solid = req.body;
+  const hasName = typeof solid.name === 'string' && solid.name !== '';
+  const hasMaterial =
+    typeof solid.material === 'string' && solid.material !== '';
+  const hasDensity = typeof solid.density === 'string' && solid.density !== '';
+  if (hasName && hasMaterial && hasDensity) next();
+  else res.json({ error: 'Invalid Solid Configuration' });
+};
+
+router.post('/', validSolid, (req, res) => {
+  const newSolid = new Solid(
+    req.body.name,
+    req.body.material,
+    req.body.density
+  );
+  Solids.push(newSolid);
+  return res.redirect('/');
 });
 
 // delete solid
@@ -41,6 +49,7 @@ router.delete('/:id', (req, res) => {
     Solids.forEach((solid, i) => {
       if (req.params.id === solid.id) {
         Solids.splice(i, 1);
+        return res.send(solid);
       }
     });
   } else return res.status(400).json({ msg: 'Solid Not Found' });
@@ -58,13 +67,5 @@ router.get('/:id', (req, res) => {
     return res.json(Solids.filter((solid) => solid.id === req.params.id));
   } else return res.status(400).json({ msg: 'Solid Not Found' });
 });
-
-function validSolid(solid) {
-  const hasName = typeof solid.name === 'string' && solid.name !== '';
-  const hasMaterial =
-    typeof solid.material === 'string' && solid.material !== '';
-  const hasDensity = typeof solid.density === 'string' && solid.density !== '';
-  return hasName && hasMaterial && hasDensity;
-}
 
 module.exports = { router, Solids };
