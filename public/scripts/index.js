@@ -1,4 +1,4 @@
-const hostname = `http://${window.location.hostname}:${window.location.port}`;
+const hostname = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
 const printTimeRemaining = document.getElementById('print-time');
 const solidName = document.getElementById('solid-name');
 const solidMaterial = document.getElementById('solid-material');
