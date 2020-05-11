@@ -24,20 +24,19 @@ router.use(express.urlencoded({ extended: false }));
 // middleware function to validate solid
 const validSolid = (req, res, next) => {
   const solid = req.body;
-  const hasName = typeof solid.nameVal === 'string' && solid.nameVal !== '';
+  const hasName = typeof solid.name === 'string' && solid.name !== '';
   const hasMaterial =
-    typeof solid.materialVal === 'string' && solid.materialVal !== '';
-  const hasDensity =
-    typeof solid.densityVal === 'string' && solid.densityVal !== '';
+    typeof solid.material === 'string' && solid.material !== '';
+  const hasDensity = typeof solid.density === 'string' && solid.density !== '';
   if (hasName && hasMaterial && hasDensity) next();
   else res.status(400).json({ error: 'Invalid Solid Configuration' });
 };
 
 router.post('/', validSolid, (req, res) => {
   const newSolid = new Solid(
-    req.body.nameVal,
-    req.body.materialVal,
-    req.body.densityVal
+    req.body.name,
+    req.body.material,
+    req.body.density
   );
   Solids.push(newSolid);
   res.status(200).send(newSolid);

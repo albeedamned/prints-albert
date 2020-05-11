@@ -70,18 +70,22 @@ async function getSingleSolid(id) {
 
 async function addPartFormSubmit(e) {
   e.preventDefault();
-  const nameVal = document.getElementById('name-field').value;
-  const materialVal = document.getElementById('material-field').value;
-  const densityVal = document.getElementById('densityRange').value;
+  const name = document.getElementById('name-field');
+  const material = document.getElementById('material-field');
+  const density = document.getElementById('densityRange');
 
   const response = await MakeRequest.post(`${locationURL}/api/solids`, {
-    nameVal,
-    materialVal,
-    densityVal
+    name: name.value,
+    material: material.value,
+    density: density.value
   });
 
-  if (response.ok) DOMStuff.refreshSolidUL();
-  else throw new Error('Bad Solid Post Request');
+  if (response.ok) {
+    name.value = '';
+    material.value = 'Plastic';
+    density.value = '50';
+    DOMStuff.refreshSolidUL();
+  } else throw new Error('Bad Solid Post Request');
 }
 
 async function deletePartFromLibrary(e) {
