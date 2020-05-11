@@ -8,7 +8,7 @@ block content
       | virtual parts from a user-managed library, virtually.
       | If you're interested, my code can be found <a href="http://www.github.com/augardiner/prints-albert">here</a>.
     h4 How do I work?
-    p       
+    p
       | I believe it's rude to talk about one's <em>back end</em> in public, but here goes...
       | At my core, I'm a node.js web server that makes http requests to two endpoints, 
       | <strong>/api/solids</strong> and <strong>/api/printjobs</strong>, to manage your parts. 
@@ -25,36 +25,36 @@ block content
           tr
             td(rowspan="2") /api/solids
             td get
-            td Get all solids in part library
+            td Get all Solid objects in part library
             td -
           tr
             td post
             td Create solid
-            td Adds solid object to part library     
+            td Adds Solid object to part library     
           tr
             td /api/solids/:id
             td get
             td Get single solid from part library
-            td Gets part object for addition to print queue
+            td Gets Solid object for addition to print queue
           tr
             td
             td delete
             td Delete solid
-            td Removes solid object from part library            
+            td Removes Solid object from part library            
           tr
             td(rowspan="2") /api/printjobs
             td get
             td Get all print jobs in queue
-            td Gets array of print job objects to pass first job to printer
+            td Gets array of PrintJob objects to pass first job to printer
           tr
             td post
             td Create print job
-            td Adds solid to print queue as a print job
+            td Adds solid to print queue as a PrintJob object
           tr
             td /api/printjobs/:id
             td delete
             td Delete print job from queue
-            td Removes print job from queue
+            td Removes PrintJob object from queue
       | Right now I store all of your part and print job data myself, however, I hope to soon offload this to a database.
       | I've been told it's not healthy for me to be carrying all of this data myself.
       br
