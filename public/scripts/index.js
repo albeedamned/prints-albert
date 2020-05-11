@@ -1,13 +1,16 @@
-const hostname = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+const locationURL = `${window.location.protocol}//${window.location.hostname}:${window.location.port}`;
+const solidForm = document.getElementById('solid-form');
 const printTimeRemaining = document.getElementById('print-time');
 const solidName = document.getElementById('solid-name');
 const solidMaterial = document.getElementById('solid-material');
 const printerImg = document.getElementById('printer-img');
 
-document.addEventListener('DOMContentLoaded', checkPrinterStatus());
+// document.addEventListener('DOMContentLoaded', checkPrinterStatus());
 document.addEventListener('DOMContentLoaded', loadEventListeners());
 
 function loadEventListeners() {
+  solidForm.addEventListener('submit', addPartFormSubmit);
+
   // density slider value
   const densityValue = document.getElementById('densityRange');
   const densityValueDisplay = document.getElementById('density-value');
@@ -21,11 +24,11 @@ function loadEventListeners() {
   solidList.forEach((item) => {
     item
       .getElementsByClassName('remove-btn-solid')[0]
-      .addEventListener('click', deleteSolid);
+      .addEventListener('click', deletePartFromLibrary);
 
     item
       .getElementsByClassName('print-btn-solid')[0]
-      .addEventListener('click', addToQueue);
+      .addEventListener('click', addPrintjobToQueue);
   });
 
   // buttons on each print job li item
@@ -33,7 +36,7 @@ function loadEventListeners() {
   printJobListItem.forEach((item) => {
     item
       .getElementsByClassName('remove-btn-pj')[0]
-      .addEventListener('click', deletePrintJob);
+      .addEventListener('click', deletePrintJobFromQueue);
   });
 
   // print next print job button
@@ -43,50 +46,79 @@ function loadEventListeners() {
 
 async function getAllPrintjobs() {
   // get print jobs from 'db'
-  const printJobs = MakeRequest.get(`${hostname}/api/printjobs/`);
-  return printJobs;
+  const response = await MakeRequest.get(`${locationURL}/api/printjobs/`);
+  if (response.ok) return response.json();
+  else throw new Error('Bad Solid Get Request');
+}
+
+async function getAllSolids() {
+  // get print jobs from 'db'
+  const response = await MakeRequest.get(`${locationURL}/api/solids/`);
+  if (response.ok) return response.json();
+  else throw new Error('Bad Solid Get Request');
 }
 
 async function getSingleSolid(id) {
   // get solid from 'db'
-  const solid = MakeRequest.getSingle(`${hostname}/api/solids/`, `${id}`);
-  return solid;
+  const response = await MakeRequest.getSingle(
+    `${locationURL}/api/solids/`,
+    `${id}`
+  );
+  if (response.ok) return response.json();
+  else throw new Error('Bad Solid Get Single Request');
 }
 
-async function deleteSolid(e) {
-  // remove from document
-  DOMStuff.removeTarget(e.target.parentElement.parentElement);
+async function addPartFormSubmit(e) {
+  e.preventDefault();
+  const nameVal = document.getElementById('name-field').value;
+  const materialVal = document.getElementById('material-field').value;
+  const densityVal = document.getElementById('densityRange').value;
+
+  const response = await MakeRequest.post(`${locationURL}/api/solids`, {
+    nameVal,
+    materialVal,
+    densityVal
+  });
+
+  if (response.ok) DOMStuff.refreshSolidUL();
+  else throw new Error('Bad Solid Post Request');
+}
+
+async function deletePartFromLibrary(e) {
   // remove from 'db'
-  const delSolidId =
-    e.target.parentElement.previousSibling.childNodes[0].textContent;
-  MakeRequest.delete(`${hostname}/api/solids/`, `${delSolidId}`);
+  const delSolidId = e.target.nextElementSibling.nextElementSibling.innerText;
+  const response = await MakeRequest.delete(
+    `${locationURL}/api/solids/`,
+    `${delSolidId}`
+  );
+  if (response.ok) DOMStuff.refreshSolidUL();
+  else throw new Error('Bad Solid Delete Request');
 }
 
-async function addToQueue(e) {
+async function addPrintjobToQueue(e) {
   // get solid to print
-  const addToQueueId =
-    e.target.parentElement.previousSibling.childNodes[0].textContent;
-  const singleSolid = await getSingleSolid(addToQueueId);
+  const queueSolidId = e.target.nextElementSibling.innerText;
+  const singleSolid = await getSingleSolid(queueSolidId);
   const solidToPrint = singleSolid[0];
 
   // make post request to /api/printjobs with solid
-  const newPrintJobData = await MakeRequest.post(
-    `${hostname}/api/printjobs`,
+  const response = await MakeRequest.post(
+    `${locationURL}/api/printjobs`,
     solidToPrint
   );
-
-  // add pj to dom
-  DOMStuff.addPrintJobLi(newPrintJobData);
+  if (response.ok) DOMStuff.refreshPrintJobUL();
+  else throw new Error('Bad Print Job Post Request');
 }
 
-async function deletePrintJob(e) {
-  // remove from document
-  DOMStuff.removeTarget(e.target.parentElement.parentElement);
-
-  // remove from 'db'
-  const delPrintJobId =
-    e.target.parentElement.previousSibling.childNodes[0].textContent;
-  MakeRequest.delete(`${hostname}/api/printjobs/`, `${delPrintJobId}`);
+async function deletePrintJobFromQueue(e) {
+  // id of print job to delete
+  const delPrintJobId = e.target.nextElementSibling.innerText;
+  const response = await MakeRequest.delete(
+    `${locationURL}/api/printjobs/`,
+    `${delPrintJobId}`
+  );
+  if (response.ok) DOMStuff.refreshPrintJobUL();
+  else throw new Error('Bad Print Job Delete Request');
 }
 
 async function printNextJob() {
@@ -108,8 +140,13 @@ async function printNextJob() {
     DOMStuff.updateCurrentPrintInfo(currentPrintJob);
 
     // remove from job list and DOM
-    MakeRequest.delete(`${hostname}/api/printjobs/`, `${currentPrintJob.id}`);
-    DOMStuff.removeTarget(document.getElementsByClassName('print-job-li')[0]);
+    const response = await MakeRequest.delete(
+      `${locationURL}/api/printjobs/`,
+      `${currentPrintJob.id}`
+    );
+    if (response.ok)
+      DOMStuff.removeTarget(document.getElementsByClassName('print-job-li')[0]);
+    else throw new Error('Bad Print Job Delete Request');
 
     // countdown timer on screen
     const currentPrintJobTime = currentPrintJob.printTime;
@@ -154,42 +191,82 @@ function checkPrinterStatus() {
 }
 
 class DOMStuff {
+  static async refreshSolidUL() {
+    const solidUl = document.getElementById('solid-list');
+    const solids = await getAllSolids();
+    solidUl.innerHTML = '';
+    if (solids.length > 0) {
+      solids.forEach((solid) => {
+        const newLi = document.createElement('li');
+        newLi.classList.add(
+          'list-group-item',
+          'd-flex',
+          'justify-content-between',
+          'align-items-center',
+          'solid-li'
+        );
+        newLi.innerHTML = `
+        <span>
+          <text class="li-name">${solid.name}</text>
+          <br>
+          <small class="li-detail">Material: ${solid.material}</small>
+          <br>
+          <small class="li-detail">Density: ${solid.density}%</small>
+        </span>
+        <span>
+          <button id="remove-${solid.id}" class="btn-primary btn remove-btn-pj">Remove</button>
+          <button id="print-${solid.id}" class="btn-primary btn remove-btn-pj ml-1">Print</button>
+          <small class="hidden-id">${solid.id}</small>
+        </span>`;
+        solidUl.appendChild(newLi);
+
+        // add listeners for buttons
+        const removeButton = document.getElementById(`remove-${solid.id}`);
+        removeButton.addEventListener('click', deletePartFromLibrary);
+        const printButton = document.getElementById(`print-${solid.id}`);
+        printButton.addEventListener('click', addPrintjobToQueue);
+      });
+    }
+  }
+
+  static async refreshPrintJobUL() {
+    const pjUl = document.getElementById('pj-list');
+    const printJobs = await getAllPrintjobs();
+    pjUl.innerHTML = '';
+    if (printJobs.length > 0) {
+      printJobs.forEach((job) => {
+        const newLi = document.createElement('li');
+        newLi.classList.add(
+          'list-group-item',
+          'd-flex',
+          'justify-content-between',
+          'align-items-center',
+          'print-job-li'
+        );
+        newLi.innerHTML = `
+        <span>
+          <text class="li-name">${job.solidName}</text>
+          <br>
+          <small class="li-detail">Material: ${job.solidMaterial}</small>
+          <br>
+          <small class="li-detail">Print Time: ${job.printTime} seconds</small>
+        </span>
+        <span>
+          <button id="${job.id}" class="btn-primary btn remove-btn-pj">Remove</button>
+          <small class="hidden-id">${job.id}</small>
+        </span>`;
+        pjUl.appendChild(newLi);
+
+        // add listener for remove button
+        const button = document.getElementById(`${job.id}`);
+        button.addEventListener('click', deletePrintJobFromQueue);
+      });
+    }
+  }
+
   static removeTarget(target) {
     target.remove();
     return target;
-  }
-
-  static addPrintJobLi(newPj) {
-    const pjUl = document.getElementById('pj-list');
-    const newLi = document.createElement('li');
-    newLi.classList.add(
-      'list-group-item',
-      'd-flex',
-      'justify-content-between',
-      'align-items-center',
-      'print-job-li'
-    );
-    newLi.innerHTML = `
-    <span>
-      <text class="pj-id">${newPj.id}</text>
-      <text class="li-name">${newPj.solidName}</text>
-      <br>
-      <small class="li-detail">Material: ${newPj.solidMaterial}</small>
-      <br>
-      <small class="li-detail">Print Time: ${newPj.printTime}</small>
-      <small class="li-detail">Seconds</small>
-    </span>
-    <span>
-      <button id="${newPj.id}" class="btn-primary btn remove-btn-pj">Remove</button>
-    </span>`;
-    pjUl.appendChild(newLi);
-
-    // add listener for remove button
-    const button = document.getElementById(`${newPj.id}`);
-    button.addEventListener('click', function (e) {
-      DOMStuff.removeTarget(e.target.parentElement.parentElement);
-      MakeRequest.delete(`${hostname}/api/printjobs/`, `${newPj.id}`);
-    });
   }
 
   static updateCurrentPrintInfo(currentPrintJob) {
@@ -201,33 +278,25 @@ class DOMStuff {
 
 class MakeRequest {
   static async get(endpoint) {
-    const response = await fetch(endpoint);
-    const resData = await response.json();
-    return resData;
+    return await fetch(endpoint);
   }
 
   static async getSingle(endpoint, param) {
-    const response = await fetch(`${endpoint}${param}`);
-    const resData = await response.json();
-    return resData;
+    return await fetch(`${endpoint}${param}`);
   }
 
   static async post(endpoint, body) {
-    const response = await fetch(endpoint, {
+    return await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify(body)
     });
-    const resData = await response.json();
-    return resData;
   }
 
   static async delete(endpoint, param) {
-    const response = await fetch(`${endpoint}${param}`, {
+    return await fetch(`${endpoint}${param}`, {
       method: 'DELETE',
       headers: { 'Content-type': 'application/json' }
     });
-    const resData = await response.json();
-    return resData;
   }
 }

@@ -17,7 +17,7 @@ const validPrintJob = (req, res, next) => {
   const hasDensity =
     typeof printJob.density === 'string' && printJob.density !== '';
   if (hasId && hasName && hasMaterial && hasDensity) next();
-  else res.json({ error: 'Invalid Print Job Configuration' });
+  else res.status(400).json({ error: 'Invalid Print Job Configuration' });
 };
 
 // add solid to job list
@@ -29,7 +29,7 @@ router.post('/', validPrintJob, (req, res) => {
     req.body.density
   );
   Jobs.push(newPrintJob);
-  return res.send(newPrintJob);
+  return res.status(200).send(newPrintJob);
 });
 
 // delete print job from print queue
@@ -39,7 +39,7 @@ router.delete('/:id', (req, res) => {
     Jobs.forEach((job, i) => {
       if (req.params.id === job.id) {
         Jobs.splice(i, 1);
-        return res.send(job);
+        return res.status(200).send(job);
       }
     });
   } else return res.status(400).json({ msg: 'Print Job Not Found' });
@@ -47,7 +47,7 @@ router.delete('/:id', (req, res) => {
 
 // get all print jobs
 router.get('/', (req, res) => {
-  return res.send(Jobs);
+  return res.status(200).send(Jobs);
 });
 
 module.exports = { router, Jobs };

@@ -4,19 +4,20 @@ block content
   div.row
     div.col-4.border-right
       h4 Add Part
-      form.mb-3(action="/api/solids" method="POST")
+      //- form.mb-3(action="/api/solids" method="POST" id="solid-form" )
+      form.mb-3#solid-form
         div.form-group.mb-1
           label.mb-1 Name
-          input.form-control(type="text" name="name" required)
+          input.form-control#name-field(required)
         div.form-group.mb-1
           label.mb-1 Material
-          select.custom-select(name="material" type="text")            
-            option(value="Plastic" name="material" type="text") Plastic
-            option(value="Metal" name="material" type="text") Metal
+          select.custom-select#material-field
+            option(value="Plastic") Plastic
+            option(value="Metal") Metal
         div.form-group
-          label.mb-1(for="density") Density          
+          label.mb-1 Density          
           div.slider-contatiner.d-flex.justify-content-center.align-items-center
-            input.custom-range(type="range" min="10" max="100" value="50" step="10" name="density" id="densityRange")
+            input.custom-range#densityRange(type="range" min="10" max="100" value="50" step="10")
             small.ml-2.density-value#density-value
             small.density-value %
         input.btn.btn-primary(type="submit" value="Add Part")
@@ -26,55 +27,52 @@ block content
         each solid in Solids
           li.list-group-item.d-flex.justify-content-between.align-items-center.solid-li
             span
-              text.solid-id #{solid.id}
-              text.li-name.solid-property #{solid.name}
+              text.li-name #{solid.name}
               br
-              small.li-detail Material: 
-              small.li-detail.solid-property #{solid.material}
+              small.li-detail Material: #{solid.material}              
               br
-              small.li-detail Density: 
-              small.li-detail.solid-property #{solid.density}
-              small.li-detail %
+              small.li-detail Density: #{solid.density}%
             span
               button.btn-primary.btn.remove-btn-solid Remove
               button.btn-primary.btn.ml-2.print-btn-solid Print
+              text.hidden-id #{solid.id}
     div.col-8
       div.row.mb-3
         div.col-8
           h4 Printer
-        button.btn-primary.btn.ml-1#printer-start Start Next Print Job           
+        button.btn-primary.btn.ml-1#printer-start Start Next Print Job
       div
         div.row
-          div.col-8            
+          div.col-8
             h5 Current Print Job
             text.printer-text Name:
             text#solid-name
             br
-            text.printer-text Material:       
+            text.printer-text Material:
             text#solid-material
             br
             text.printer-text Time Remaining (s):
             br
             br
-            div.d-flex.justify-content-center     
-              text#print-time 0            
-            br
-          div.col-2.ml-4            
             div.d-flex.justify-content-center
-              img#printer-img(src="images/emptyPrinter.png" alt="printerGif" style="height: 200%;width: 200%")                
+              text#print-time 0
+            br
+          div.col-2.ml-4
+            div.d-flex.justify-content-center
+              img#printer-img(src="images/emptyPrinter.png" alt="printerGif" style="height: 200%;width: 200%")
       h4 Print Job Queue
       hr
       ul.list-group.mt-4#pj-list
         each job in printJobs
           li.list-group-item.d-flex.justify-content-between.align-items-center.print-job-li
             span
-              text.pj-id #{job.id}
               text.li-name #{job.solidName}
               br
               small.li-detail Material: #{job.solidMaterial}
               br
-              small.li-detail Print Time: #{job.printTime} 
-              small.li-detail seconds
+              small.li-detail Print Time: #{job.printTime} seconds
             span
               button.btn-primary.btn.remove-btn-pj Remove
+              small.hidden-id #{job.id}
+  script(src="scripts/DOMStuff.js" type="module")
   script(src="scripts/index.js")

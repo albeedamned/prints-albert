@@ -24,22 +24,23 @@ router.use(express.urlencoded({ extended: false }));
 // middleware function to validate solid
 const validSolid = (req, res, next) => {
   const solid = req.body;
-  const hasName = typeof solid.name === 'string' && solid.name !== '';
+  const hasName = typeof solid.nameVal === 'string' && solid.nameVal !== '';
   const hasMaterial =
-    typeof solid.material === 'string' && solid.material !== '';
-  const hasDensity = typeof solid.density === 'string' && solid.density !== '';
+    typeof solid.materialVal === 'string' && solid.materialVal !== '';
+  const hasDensity =
+    typeof solid.densityVal === 'string' && solid.densityVal !== '';
   if (hasName && hasMaterial && hasDensity) next();
-  else res.json({ error: 'Invalid Solid Configuration' });
+  else res.status(400).json({ error: 'Invalid Solid Configuration' });
 };
 
 router.post('/', validSolid, (req, res) => {
   const newSolid = new Solid(
-    req.body.name,
-    req.body.material,
-    req.body.density
+    req.body.nameVal,
+    req.body.materialVal,
+    req.body.densityVal
   );
   Solids.push(newSolid);
-  return res.redirect('/');
+  res.status(200).send(newSolid);
 });
 
 // delete solid
@@ -49,7 +50,7 @@ router.delete('/:id', (req, res) => {
     Solids.forEach((solid, i) => {
       if (req.params.id === solid.id) {
         Solids.splice(i, 1);
-        return res.send(solid);
+        return res.status(200).send(solid);
       }
     });
   } else return res.status(400).json({ msg: 'Solid Not Found' });
@@ -57,14 +58,16 @@ router.delete('/:id', (req, res) => {
 
 // get all Solids
 router.get('/', (req, res) => {
-  return res.json(Solids);
+  return res.status(200).json(Solids);
 });
 
 //get single solid
 router.get('/:id', (req, res) => {
   const found = Solids.some((solid) => solid.id === req.params.id);
   if (found) {
-    return res.json(Solids.filter((solid) => solid.id === req.params.id));
+    return res
+      .status(200)
+      .send(Solids.filter((solid) => solid.id === req.params.id));
   } else return res.status(400).json({ msg: 'Solid Not Found' });
 });
 
