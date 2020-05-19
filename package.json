@@ -5,13 +5,14 @@
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "dev": "nodemon app"
+    "dev": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) nodemon app"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "pg": "^8.2.1",
     "pug": "^2.0.4",
     "serve-favicon": "^2.5.0",
     "uuid": "^7.0.3"

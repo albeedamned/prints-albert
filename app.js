@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const Solids = require('./routes/api/solids').Solids;
 const printJobs = require('./routes/api/printjobs').Jobs;
 
 // set favicon path
@@ -12,12 +11,16 @@ app.use(favicon(path.join(__dirname, 'public', 'images/favicon.ico')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+// JSON/body parser middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 // set static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 // home route
 app.get('/', (req, res) => {
-  res.render('home', { Solids, printJobs });
+  res.render('home', { printJobs });
 });
 
 // about route

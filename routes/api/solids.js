@@ -1,25 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Solid = require('../../object-classes/Solid');
-
-const Solids = [
-  {
-    name: 'Solid 1',
-    material: 'Plastic',
-    density: '20',
-    id: 'b65cce18-a070-43ac-b3a6-2ffbfc2c103c'
-  },
-  {
-    name: 'Solid 2',
-    material: 'Metal',
-    density: '50',
-    id: 'hasd9f73-jf86-kf09-f755-asdf9yh3ongo'
-  }
-];
-
-// JSON/body parser middleware
-router.use(express.json());
-router.use(express.urlencoded({ extended: false }));
+const uuid = require('uuid');
+const db = require('../../db');
 
 // middleware function to validate solid
 const validSolid = (req, res, next) => {
@@ -32,42 +14,53 @@ const validSolid = (req, res, next) => {
   else res.status(400).json({ error: 'Invalid Solid Configuration' });
 };
 
-router.post('/', validSolid, (req, res) => {
-  const newSolid = new Solid(
-    req.body.name,
-    req.body.material,
-    req.body.density
-  );
-  Solids.push(newSolid);
-  res.status(200).send(newSolid);
-});
-
-// delete solid
-router.delete('/:id', (req, res) => {
-  const found = Solids.some((solid) => solid.id === req.params.id);
-  if (found) {
-    Solids.forEach((solid, i) => {
-      if (req.params.id === solid.id) {
-        Solids.splice(i, 1);
-        return res.status(200).send(solid);
-      }
-    });
-  } else return res.status(400).json({ msg: 'Solid Not Found' });
-});
-
-// get all Solids
-router.get('/', (req, res) => {
-  return res.status(200).json(Solids);
+// get all solids
+router.get('/', async (req, res) => {
+  try {
+    const { rows } = await db.query('SELECT * FROM solids');
+    res.status(200).send(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({db_error: 'can\'t get solids'});
+  }
 });
 
 //get single solid
-router.get('/:id', (req, res) => {
-  const found = Solids.some((solid) => solid.id === req.params.id);
-  if (found) {
-    return res
-      .status(200)
-      .send(Solids.filter((solid) => solid.id === req.params.id));
-  } else return res.status(400).json({ msg: 'Solid Not Found' });
+router.get('/:id', async (req, res) => {
+  const singleSolidId = [req.params.id];
+  try {
+    const { rows } = await db.query('SELECT * FROM solids WHERE id = $1', singleSolidId);
+    res.send(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({db_error: 'can\'t get solid'});
+  }
 });
 
-module.exports = { router, Solids };
+// create new solid
+router.post('/', validSolid, async (req, res) => {
+  const newSolid = [uuid.v4(), req.body.name, req.body.material, req.body.density];
+  try {
+    const { rows } = await db.query('INSERT INTO solids(id, name, material, density) \
+    VALUES($1, $2, $3, $4) RETURNING *', newSolid);
+    res.status(200).send(rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({db_error: 'can\'t create solid'});
+  }
+});
+
+// delete solid
+router.delete('/:id', async (req, res) => {
+  const singleSolidId = [req.params.id];
+  try {
+    const { rows } = await db.query('DELETE FROM solids WHERE id = $1 RETURNING *', singleSolidId);
+    if (rows.length === 0) res.send({error: 'solid not found'});
+    res.send(rows);
+  } catch (err) {
+    console.error(err);
+    res.status(400).send({db_error: 'can\'t delete solid'});
+  }
+});
+
+module.exports = { router };

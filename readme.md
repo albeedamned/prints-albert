@@ -20,6 +20,6 @@ Here's a current list of requests I can handle:
 | /api/printjobs     | post         | Create print job                   | Adds solid to print queue as a print job                     |
 | /api/printjobs/:id | delete       | Delete print job from queue        | Removes print job from queue                                 |
 
-Right now I store all of your part and print job data myself, however, I hope to soon offload this to a database. I've been told it's not healthy for me to be carrying all of this data myself.
+I store all of your part and print job data in a Postgres powered DB.
 
 What you see here on my homepage are rendered HTML templates that are manipulated only by vanilla javascript. Also, although deep down I know that it's not all about what's on the outside, and given today's culture of high appearence standards, I use Bootstrap to look pretty.
