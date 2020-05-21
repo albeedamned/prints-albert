@@ -1,5 +1,4 @@
 const app = require('../app');
-// const { assert, expect } = require('chai');
 const request = require('supertest');
 
 describe('/api/solids', () => {
