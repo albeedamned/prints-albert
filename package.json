@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "dev": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) nodemon app"
+    "dev": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) nodemon app",
+    "test": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) mocha --exit",
+    "test-coverage": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) nyc mocha --exit"
   },
   "keywords": [],
   "author": "",
@@ -18,8 +20,12 @@
     "uuid": "^7.0.3"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.8.0",
+    "mocha": "^7.1.2",
     "nodemon": "^2.0.3",
-    "prettier": "^2.0.4"
+    "nyc": "^15.0.1",
+    "prettier": "^2.0.4",
+    "supertest": "^4.0.2"
   }
 }

@@ -31,6 +31,11 @@ router.get('/', async (req, res) => {
 router.post('/', validPrintJob, async (req, res) => {
   const printTime = Math.floor(Math.random() * 61 * (req.body.density * 0.01));
   const newPrintJob = [uuid.v4(), req.body.id, req.body.name, req.body.material, printTime];
+  // for testing
+  if (req.body.solidId) {
+    newPrintJob[0] = req.body.solidId;
+    newPrintJob[4] = req.body.density;
+  }
   try {
     const { rows } = await db.query('INSERT INTO printjobs(id, solid_id, solid_name, solid_material, print_time) \
     VALUES($1, $2, $3, $4, $5) RETURNING *', newPrintJob);

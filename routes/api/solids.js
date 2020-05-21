@@ -40,6 +40,7 @@ router.get('/:id', async (req, res) => {
 // create new solid
 router.post('/', validSolid, async (req, res) => {
   const newSolid = [uuid.v4(), req.body.name, req.body.material, req.body.density];
+  req.body.id ? newSolid[0] = req.body.id : newSolid[0] = uuid.v4(); // for testing
   try {
     const { rows } = await db.query('INSERT INTO solids(id, name, material, density) \
     VALUES($1, $2, $3, $4) RETURNING *', newSolid);
