@@ -4,10 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app",
-    "dev": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) nodemon app",
-    "test": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) mocha --exit",
-    "test-coverage": "DATABASE_URL=$(heroku config:get DATABASE_URL -a prints-albert) nyc mocha --exit"
+    "start": "node app"
   },
   "keywords": [],
   "author": "",
